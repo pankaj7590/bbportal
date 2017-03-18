@@ -3,6 +3,8 @@
 namespace common\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\behaviors\BlameableBehavior;
 
 /**
  * This is the model class for table "team_player".
@@ -29,6 +31,7 @@ use Yii;
  */
 class TeamPlayer extends \yii\db\ActiveRecord
 {
+	
     /**
      * @inheritdoc
      */
@@ -44,7 +47,8 @@ class TeamPlayer extends \yii\db\ActiveRecord
     {
         return [
             [['team_id', 'player_id'], 'required'],
-            [['team_id', 'player_id', 'status', 'created_by', 'updated_by', 'created_at', 'updated_at'], 'integer'],
+            [['team_id', 'player_id'], 'unique', 'targetAttribute' => ['team_id', 'player_id']],
+            [['team_id', 'status', 'created_by', 'updated_by', 'created_at', 'updated_at'], 'integer'],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['updated_by' => 'id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['created_by' => 'id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['created_by' => 'id']],
@@ -58,6 +62,14 @@ class TeamPlayer extends \yii\db\ActiveRecord
         ];
     }
 
+    public function behaviors()
+    {
+        return [
+            TimestampBehavior::className(),
+			BlameableBehavior::className(),
+        ];
+    }
+	
     /**
      * @inheritdoc
      */
@@ -65,8 +77,8 @@ class TeamPlayer extends \yii\db\ActiveRecord
     {
         return [
             'id' => Yii::t('app', 'ID'),
-            'team_id' => Yii::t('app', 'Team ID'),
-            'player_id' => Yii::t('app', 'Player ID'),
+            'team_id' => Yii::t('app', 'Team'),
+            'player_id' => Yii::t('app', 'Player'),
             'status' => Yii::t('app', 'Status'),
             'created_by' => Yii::t('app', 'Created By'),
             'updated_by' => Yii::t('app', 'Updated By'),

@@ -38,9 +38,9 @@ class TeamPlayerSearch extends TeamPlayer
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
+    public function search($params,$team_id)
     {
-        $query = TeamPlayer::find();
+        $query = TeamPlayer::find()->where(['team_id' => $team_id]);
 
         // add conditions that should always apply here
 

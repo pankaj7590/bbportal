@@ -7,7 +7,8 @@ use yii\widgets\Pjax;
 /* @var $searchModel common\models\AssociationPlayerSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app', 'Association Players');
+$this->title = $association->name.': '.Yii::t('app', 'Players');
+$this->params['breadcrumbs'][] = ['label' => $association->name, 'url' => ['association/view', 'id'=> $association->id]];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="association-player-index">
@@ -16,7 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
-        <?= Html::a(Yii::t('app', 'Create Association Player'), ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Yii::t('app', 'Add Player'), ['create', 'association_id' => $association->id], ['class' => 'btn btn-success']) ?>
     </p>
 <?php Pjax::begin(); ?>    <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -24,14 +25,21 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
-            'association_id',
-            'player_id',
-            'status',
-            'created_by',
-            // 'updated_by',
-            // 'created_at',
-            // 'updated_at',
+            // 'id',
+			[
+				'attribute' => 'player_id',
+				'label' => 'Player',
+				'value' => function($data){
+					return $data->player->name;
+				},
+			],
+			[
+				'attribute' => 'status',
+				'value' => function($data){
+					return Status::$label[$data->status];
+				},
+			],
+            'updated_at:datetime',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

@@ -3,8 +3,11 @@
 namespace backend\controllers;
 
 use Yii;
+use common\models\Association;
+use common\models\Player;
 use common\models\AssociationPlayer;
 use common\models\AssociationPlayerSearch;
+use common\models\enums\Status;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -33,12 +36,14 @@ class AssociationPlayerController extends Controller
      * Lists all AssociationPlayer models.
      * @return mixed
      */
-    public function actionIndex()
+    public function actionIndex($association_id)
     {
+		$association = $this->findAssociaction($association_id);
         $searchModel = new AssociationPlayerSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $association_id);
 
         return $this->render('index', [
+			'association' => $association,
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
@@ -61,14 +66,27 @@ class AssociationPlayerController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+    public function actionCreate($association_id)
     {
+		$association = $this->findAssociaction($association_id);
         $model = new AssociationPlayer();
+		$associations = Association::findAll(['status' => Status::ACTIVE]);
+		$players = Player::findAll(['status' => Status::ACTIVE]);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+			// echo "<pre>";print_r($model);exit;
+			foreach($model->player_id as $k => $v){
+				$assocPlayer = new AssociationPlayer();
+				$assocPlayer->association_id = $model->association_id;
+				$assocPlayer->player_id = $v;
+				$assocPlayer->save();
+			}
+            return $this->redirect(['index', 'association_id' => $association_id]);
         } else {
             return $this->render('create', [
+				'association' => $association,
+				'associations' => $associations,
+				'players' => $players,
                 'model' => $model,
             ]);
         }
@@ -101,8 +119,8 @@ class AssociationPlayerController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
-
+		$model = $this->findModel($id);
+		$model->updateAttributes(['status' => Status::DELETED]);
         return $this->redirect(['index']);
     }
 
@@ -116,6 +134,15 @@ class AssociationPlayerController extends Controller
     protected function findModel($id)
     {
         if (($model = AssociationPlayer::findOne($id)) !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+    }
+	
+    protected function findAssociaction($id)
+    {
+        if (($model = Association::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

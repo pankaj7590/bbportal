@@ -2,6 +2,9 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use common\models\Player;
+use common\models\enums\Status;
+use common\models\enums\Position;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Player */
@@ -11,8 +14,6 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Players'), 'url' => 
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="player-view">
-
-    <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
         <?= Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
@@ -28,18 +29,25 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'id',
+            // 'id',
             'unique_id',
             'name',
-            'position',
+			[
+				'attribute' => 'position',
+				'value' => Position::$label[$model->position],
+			],
             'birth_date',
-            'gender',
+			[
+				'attribute' => 'gender',
+				'value' => Player::$gender[$model->gender],
+			],
             'seeding',
-            'status',
-            'created_by',
-            'updated_by',
-            'created_at',
-            'updated_at',
+			[
+				'attribute' => 'status',
+				'value' => Status::$label[$model->status],
+			],
+            'created_at:datetime',
+            'updated_at:datetime',
         ],
     ]) ?>
 

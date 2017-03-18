@@ -38,9 +38,9 @@ class AssociationPlayerSearch extends AssociationPlayer
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
+    public function search($params, $association_id)
     {
-        $query = AssociationPlayer::find();
+        $query = AssociationPlayer::find()->where(['association_id' => $association_id]);
 
         // add conditions that should always apply here
 

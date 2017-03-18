@@ -6,7 +6,7 @@ use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
-
+use common\components\UidHelper;
 /**
  * User model
  *
@@ -53,6 +53,9 @@ use yii\web\IdentityInterface;
  */
 class User extends ActiveRecord implements IdentityInterface
 {
+	public $uid = 'USER';
+	public $password;
+	
     const STATUS_DELETED = 0;
     const STATUS_ACTIVE = 10;
 
@@ -81,16 +84,18 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-			[['username', 'auth_key', 'password_hash', 'email'], 'required'],
-			[['status', 'created_at', 'updated_at'], 'integer'],
-			[['username', 'password_hash', 'password_reset_token', 'email', 'mobile', 'designation'], 'string', 'max' => 255],
+			[['name', 'email'], 'required'],
+			[['status', 'created_at', 'updated_at', 'profile_pic'], 'integer'],
+			[['username', 'password_hash', 'password_reset_token', 'email', 'mobile', 'designation', 'unique_id'], 'string', 'max' => 255],
 			[['auth_key'], 'string', 'max' => 32],
+			[['mobile'], 'string', 'max' => 10],
 			[['username'], 'unique'],
 			[['email'], 'unique'],
 			[['password_reset_token'], 'unique'],
 			[['mobile'], 'unique'],
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
+			[['password'], 'required', 'on' => 'insert'],
         ];
     }
 	
@@ -136,6 +141,11 @@ class User extends ActiveRecord implements IdentityInterface
     public static function findByUsername($username)
     {
         return static::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE]);
+    }
+	
+    public static function findByEmailMobile($email_mobile)
+    {
+        return static::find()->where(['or', ['email' => $email_mobile],['mobile'=> $email_mobile]])->andWhere(['status' => self::STATUS_ACTIVE])->one();
     }
 
     /**
@@ -349,6 +359,35 @@ class User extends ActiveRecord implements IdentityInterface
 	}
 	
 	public function getMedia(){
-		return this->hasMany(Media::className(), ['created_by' => 'id']);
+		return $this->hasMany(Media::className(), ['created_by' => 'id']);
+	}
+	
+	public function beforeSave($insert){
+		if (parent::beforeSave($insert)) {
+			if($this->password){
+				$this->setPassword($this->password);
+				$this->generateAuthKey();
+			}
+			if(!$this->unique_id){
+				$uid = UidHelper::generate(6);
+				$temp = $this->uid.$uid;
+				while(self::findOne(['unique_id' => $temp])){
+					$temp = UidHelper::generate(6);
+				}
+				$this->updateAttributes(['unique_id' => $temp]);
+			}
+			return true;
+		}
+		return false;
+	}
+	
+	public function isSuperAdmin(){
+		$roles = \Yii::$app->authManager->getRolesByUser($this->id);
+		foreach($roles as $k=>$v){
+			if($k == 'Super Admin'){
+				return true;
+			}
+		}
+		return false;
 	}
 }

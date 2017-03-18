@@ -3,6 +3,8 @@
 namespace common\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\behaviors\BlameableBehavior;
 
 /**
  * This is the model class for table "pool_team".
@@ -39,6 +41,14 @@ class PoolTeam extends \yii\db\ActiveRecord
             [['pool_id', 'team_id', 'status', 'created_by', 'updated_by', 'created_at', 'updated_at'], 'integer'],
             [['team_id'], 'exist', 'skipOnError' => true, 'targetClass' => Team::className(), 'targetAttribute' => ['team_id' => 'id']],
             [['pool_id'], 'exist', 'skipOnError' => true, 'targetClass' => Pool::className(), 'targetAttribute' => ['pool_id' => 'id']],
+        ];
+    }
+	
+    public function behaviors()
+    {
+        return [
+            TimestampBehavior::className(),
+			BlameableBehavior::className(),
         ];
     }
 

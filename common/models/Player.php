@@ -3,6 +3,9 @@
 namespace common\models;
 
 use Yii;
+use common\components\UidHelper;
+use yii\behaviors\TimestampBehavior;
+use yii\behaviors\BlameableBehavior;
 
 /**
  * This is the model class for table "player".
@@ -28,6 +31,16 @@ use Yii;
  */
 class Player extends \yii\db\ActiveRecord
 {
+	public $uid = 'PLAYER';
+	
+	const MALE = 0;
+	const FEMALE = 1;
+	
+	public static $gender = [
+		self::MALE => 'Male',
+		self::FEMALE => 'Female',
+	];
+	
     /**
      * @inheritdoc
      */
@@ -42,11 +55,20 @@ class Player extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['unique_id', 'name'], 'required'],
-            [['position', 'birth_date', 'gender', 'seeding', 'status', 'created_by', 'updated_by', 'created_at', 'updated_at'], 'integer'],
+            [['name'], 'required'],
+            [['position', 'gender', 'seeding', 'status', 'created_by', 'updated_by', 'created_at', 'updated_at'], 'integer'],
             [['unique_id', 'name'], 'string', 'max' => 255],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['updated_by' => 'id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['created_by' => 'id']],
+			[['birth_date'], 'safe'],
+        ];
+    }
+	
+    public function behaviors()
+    {
+        return [
+            TimestampBehavior::className(),
+			BlameableBehavior::className(),
         ];
     }
 
@@ -110,4 +132,29 @@ class Player extends \yii\db\ActiveRecord
     {
         return $this->hasMany(TeamPlayer::className(), ['player_id' => 'id']);
     }
+	
+	public function beforeSave($insert){
+		if (parent::beforeSave($insert)) {
+			if(!$this->unique_id){
+				$uid = UidHelper::generate(6);
+				$temp = $this->uid.$uid;
+				while(self::findOne(['unique_id' => $temp])){
+					$temp = UidHelper::generate(6);
+				}
+				$this->updateAttributes(['unique_id' => $temp]);
+			}
+			if($this->birth_date){
+				$this->birth_date = str_replace('/', '-', $this->birth_date);
+				$this->birth_date = strtotime($this->birth_date);
+			}
+			
+			return true;
+		}
+		return false;
+	}
+	
+	public function afterFind(){
+		$this->birth_date = date('d/m/Y', $this->birth_date);
+		parent::afterFind();
+	}
 }

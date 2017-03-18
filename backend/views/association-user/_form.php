@@ -2,6 +2,8 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use yii\helpers\ArrayHelper;
+use common\models\enums\Status;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\AssociationUser */
@@ -12,19 +14,11 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'association_id')->textInput() ?>
+    <?= $form->field($model, 'association_id')->dropdownlist(ArrayHelper::map($associations, 'id', 'name'), ['prompt' => 'Select Association']); ?>
 
-    <?= $form->field($model, 'user_id')->textInput() ?>
+    <?= $form->field($model, 'user_id[]')->dropdownlist(ArrayHelper::map($users, 'id', 'name'), ['prompt' => 'Select Users', 'multiple' => 'multiple']) ?>
 
-    <?= $form->field($model, 'status')->textInput() ?>
-
-    <?= $form->field($model, 'created_by')->textInput() ?>
-
-    <?= $form->field($model, 'updated_by')->textInput() ?>
-
-    <?= $form->field($model, 'created_at')->textInput() ?>
-
-    <?= $form->field($model, 'updated_at')->textInput() ?>
+    <?= $form->field($model, 'status')->dropdownlist(Status::$label) ?>
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>

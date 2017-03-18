@@ -3,6 +3,9 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
+use common\models\Player;
+use common\models\enums\Status;
+
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\PlayerSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -11,9 +14,6 @@ $this->title = Yii::t('app', 'Players');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="player-index">
-
-    <h1><?= Html::encode($this->title) ?></h1>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
         <?= Html::a(Yii::t('app', 'Create Player'), ['create'], ['class' => 'btn btn-success']) ?>
@@ -24,18 +24,28 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
+            // 'id',
             'unique_id',
             'name',
-            'position',
-            'birth_date',
-            // 'gender',
+            // 'position',
+            // 'birth_date',
+			[
+				'attribute' => 'gender',
+				'value' => function($data){
+					return Player::$gender[$data->gender];
+				}
+			],
             // 'seeding',
-            // 'status',
+			[
+				'attribute' => 'status',
+				'value' => function($data){
+					return Status::$label[$data->status];
+				}
+			],
             // 'created_by',
             // 'updated_by',
             // 'created_at',
-            // 'updated_at',
+            // 'updated_at:datetime',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

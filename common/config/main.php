@@ -1,5 +1,6 @@
 <?php
 return [
+	'name' => 'BB Portal',
     'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
     'components' => [
         'cache' => [
@@ -8,9 +9,13 @@ return [
 		'assetManager' => [
 			'bundles' => [
 				'dmstr\web\AdminLteAsset' => [
-					'skin' => 'skin-black',
+					'skin' => 'skin-yellow-light',
 				],
 			],
 		],
+        'authManager' => [
+            'class' => 'yii\rbac\DbManager'
+        ],
     ],
+	'timeZone' => 'Asia/Kolkata',
 ];

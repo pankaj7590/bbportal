@@ -5,6 +5,8 @@ namespace backend\controllers;
 use Yii;
 use common\models\Association;
 use common\models\AssociationSearch;
+use common\models\enums\Status;
+
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -101,8 +103,8 @@ class AssociationController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
-
+		$model = $this->findModel($id);
+		$model->updateAttributes(['status' => Status::DELETED]);
         return $this->redirect(['index']);
     }
 

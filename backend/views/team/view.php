@@ -2,6 +2,8 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use common\models\enums\Level;
+use common\models\enums\Status;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Team */
@@ -28,16 +30,25 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'id',
+            // 'id',
             'unique_id',
             'name',
-            'association_id',
-            'level',
-            'status',
-            'created_by',
-            'updated_by',
-            'created_at',
-            'updated_at',
+			[
+				'attribute' => 'association_id',
+				'value' => $model->association->name,
+			],
+			[
+				'attribute' => 'level',
+				'value' => Level::$label[$model->level],
+			],
+			[
+				'attribute' => 'status',
+				'value' => Status::$label[$model->status],
+			],
+            // 'created_by:datetime',
+            // 'updated_by:datetime',
+            'created_at:datetime',
+            'updated_at:datetime',
         ],
     ]) ?>
 

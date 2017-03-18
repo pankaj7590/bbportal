@@ -2,12 +2,14 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use common\models\enums\Status;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\AssociationUser */
 
-$this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Association Users'), 'url' => ['index']];
+$this->title = $model->user->name;
+$this->params['breadcrumbs'][] = ['label' => $model->association->name, 'url' => ['association/view', 'id'=> $model->association->id]];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Users'), 'url' => ['index', 'association_id' => $model->association->id]];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="association-user-view">
@@ -28,14 +30,29 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'id',
-            'association_id',
-            'user_id',
-            'status',
-            'created_by',
-            'updated_by',
-            'created_at',
-            'updated_at',
+            // 'id',
+			[
+				'attribute' => 'association_id',
+				'value' => function($data){
+					return $data->association?$data->association->name:NULL;
+				},
+			],
+			[
+				'attribute' => 'user_id',
+				'value' => function($data){
+					return $data->user?$data->user->name:NULL;
+				},
+			],
+			[
+				'attribute' => 'status',
+				'value' => function($data){
+					return Status::$label[$data->status];
+				},
+			],
+            // 'created_by',
+            // 'updated_by',
+            'created_at:datetime',
+            'updated_at:datetime',
         ],
     ]) ?>
 

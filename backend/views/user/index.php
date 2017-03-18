@@ -3,6 +3,8 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
+use common\models\enums\Status;
+
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\UserSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -11,9 +13,6 @@ $this->title = Yii::t('app', 'Users');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="user-index">
-
-    <h1><?= Html::encode($this->title) ?></h1>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
         <?= Html::a(Yii::t('app', 'Create User'), ['create'], ['class' => 'btn btn-success']) ?>
@@ -24,17 +23,32 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
-            'username',
-            'auth_key',
-            'password_hash',
-            'password_reset_token',
-            // 'email:email',
-            // 'mobile',
-            // 'designation',
-            // 'status',
-            // 'created_at',
-            // 'updated_at',
+            // 'id',
+            // 'username',
+            // 'auth_key',
+            // 'password_hash',
+            // 'password_reset_token',
+            'email:email',
+            'mobile',
+            'designation',
+			[
+				'attribute' => 'status',
+				'value' => function($data){
+					return Status::$label[$data->status];
+				},
+			],
+			[
+				'attribute' => 'roles',
+				'value' => function($data){
+					$rolesArr = [];
+					$roles = Yii::$app->authManager->getRolesByUser($data->id);
+					foreach($roles as $k => $v){
+						$rolesArr[] = $v->name;
+					}
+					return implode(',', $rolesArr);
+				}
+			],
+            'updated_at:datetime',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

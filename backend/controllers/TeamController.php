@@ -3,8 +3,10 @@
 namespace backend\controllers;
 
 use Yii;
+use common\models\Association;
 use common\models\Team;
 use common\models\TeamSearch;
+use common\models\enums\Status;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -64,12 +66,14 @@ class TeamController extends Controller
     public function actionCreate()
     {
         $model = new Team();
+		$associations = Association::findAll(['status' => Status::ACTIVE]);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
                 'model' => $model,
+                'associations' => $associations,
             ]);
         }
     }
@@ -83,12 +87,14 @@ class TeamController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+		$associations = Association::findAll(['status' => Status::ACTIVE]);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [
                 'model' => $model,
+                'associations' => $associations,
             ]);
         }
     }
@@ -101,8 +107,8 @@ class TeamController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
-
+		$model = $this->findModel($id);
+		$model->updateAttributes(['status' => Status::DELETED]);
         return $this->redirect(['index']);
     }
 

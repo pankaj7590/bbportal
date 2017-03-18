@@ -101,8 +101,8 @@ class MatchController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
-
+		$model = $this->findModel($id);
+		$model->updateAttributes(['status' => Status::DELETED]);
         return $this->redirect(['index']);
     }
 

@@ -2,6 +2,8 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use common\models\enums\Level;
+use common\models\enums\Status;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Association */
@@ -12,25 +14,11 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'unique_id')->textInput(['maxlength' => true]) ?>
-
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'level')->textInput() ?>
+    <?= $form->field($model, 'level')->dropDownList(Level::$label,['prompt' => 'Select Level']) ?>
 
-    <?= $form->field($model, 'seeding')->textInput() ?>
-
-    <?= $form->field($model, 'sport')->textInput() ?>
-
-    <?= $form->field($model, 'status')->textInput() ?>
-
-    <?= $form->field($model, 'created_by')->textInput() ?>
-
-    <?= $form->field($model, 'updated_by')->textInput() ?>
-
-    <?= $form->field($model, 'created_at')->textInput() ?>
-
-    <?= $form->field($model, 'updated_at')->textInput() ?>
+    <?= $form->field($model, 'status')->dropDownList(Status::$label) ?>
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>

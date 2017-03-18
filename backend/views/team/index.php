@@ -35,7 +35,15 @@ $this->params['breadcrumbs'][] = $this->title;
             // 'created_at',
             // 'updated_at',
 
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+				'class' => 'yii\grid\ActionColumn',
+				'template' => '{view} {update} {delete} {players}',
+				'buttons' => [
+					'players' => function($url, $model, $key){
+						return Html::a('<span class="glyphicon glyphicon-user"></span>', ['team-player/index', 'team_id' => $model->id], ['title' => 'Players']);
+					}
+				]
+			],
         ],
     ]); ?>
 <?php Pjax::end(); ?></div>

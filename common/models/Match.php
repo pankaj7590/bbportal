@@ -3,12 +3,15 @@
 namespace common\models;
 
 use Yii;
+use common\components\UidHelper;
+use yii\behaviors\TimestampBehavior;
+use yii\behaviors\BlameableBehavior;
 
 /**
  * This is the model class for table "match".
  *
  * @property integer $id
- * @property string $uniqueid
+ * @property string $unique_id
  * @property integer $round
  * @property integer $tournament_id
  * @property integer $pool_id
@@ -35,6 +38,7 @@ use Yii;
  */
 class Match extends \yii\db\ActiveRecord
 {
+	public $uid = 'MATCH';
     /**
      * @inheritdoc
      */
@@ -51,13 +55,21 @@ class Match extends \yii\db\ActiveRecord
         return [
             [['round', 'tournament_id', 'pool_id', 'first_team_id', 'second_team_id', 'toss_winning_team_id', 'choice', 'winning_team_id', 'status', 'created_by', 'updated_by', 'created_at', 'updated_at'], 'integer'],
             [['first_team_id', 'second_team_id'], 'required'],
-            [['uniqueid', 'refree_name', 'scorer_name'], 'string', 'max' => 255],
+            [['unique_id', 'refree_name', 'scorer_name'], 'string', 'max' => 255],
             [['winning_team_id'], 'exist', 'skipOnError' => true, 'targetClass' => TournamentTeam::className(), 'targetAttribute' => ['winning_team_id' => 'id']],
             [['pool_id'], 'exist', 'skipOnError' => true, 'targetClass' => Pool::className(), 'targetAttribute' => ['pool_id' => 'id']],
             [['tournament_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tournament::className(), 'targetAttribute' => ['tournament_id' => 'id']],
             [['first_team_id'], 'exist', 'skipOnError' => true, 'targetClass' => TournamentTeam::className(), 'targetAttribute' => ['first_team_id' => 'id']],
             [['second_team_id'], 'exist', 'skipOnError' => true, 'targetClass' => TournamentTeam::className(), 'targetAttribute' => ['second_team_id' => 'id']],
             [['toss_winning_team_id'], 'exist', 'skipOnError' => true, 'targetClass' => TournamentTeam::className(), 'targetAttribute' => ['toss_winning_team_id' => 'id']],
+        ];
+    }
+	
+    public function behaviors()
+    {
+        return [
+            TimestampBehavior::className(),
+			BlameableBehavior::className(),
         ];
     }
 
@@ -68,7 +80,7 @@ class Match extends \yii\db\ActiveRecord
     {
         return [
             'id' => Yii::t('app', 'ID'),
-            'uniqueid' => Yii::t('app', 'Uniqueid'),
+            'unique_id' => Yii::t('app', 'Unique Id'),
             'round' => Yii::t('app', 'Round'),
             'tournament_id' => Yii::t('app', 'Tournament ID'),
             'pool_id' => Yii::t('app', 'Pool ID'),
@@ -142,4 +154,19 @@ class Match extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Set::className(), ['match_id' => 'id']);
     }
+	
+	public function beforeSave($insert){
+		if (parent::beforeSave($insert)) {
+			if(!$this->unique_id){
+				$uid = UidHelper::generate(6);
+				$temp = $this->uid.$uid;
+				while(self::findOne(['unique_id' => $temp])){
+					$temp = UidHelper::generate(6);
+				}
+				$this->updateAttributes(['unique_id' => $temp]);
+			}
+			return true;
+		}
+		return false;
+	}
 }

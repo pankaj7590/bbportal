@@ -1,4 +1,6 @@
 <?php
+use common\models\UserSearch;
+
 $params = array_merge(
     require(__DIR__ . '/../../common/config/params.php'),
     require(__DIR__ . '/../../common/config/params-local.php'),
@@ -11,7 +13,44 @@ return [
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
     'bootstrap' => ['log'],
-    'modules' => [],
+    'modules' => [
+        'admin' => [
+            'class' => 'mdm\admin\Module',
+			'controllerMap' => [
+				'assignment' => [
+					'class' => 'mdm\admin\controllers\AssignmentController',
+					/* 'userClassName' => 'app\models\User', */
+					'idField' => 'id',
+					'usernameField' => 'username',
+					'fullnameField' => 'name',
+					'extraColumns' => [
+						[
+							'attribute' => 'name',
+							'label' => 'Name',
+							'value' => function($model, $key, $index, $column) {
+								return $model->name;
+							},
+						],
+						[
+							'attribute' => 'email',
+							'label' => 'Email',
+							'value' => function($model, $key, $index, $column) {
+								return $model->email;
+							},
+						],
+						[
+							'attribute' => 'mobile',
+							'label' => 'Mobile',
+							'value' => function($model, $key, $index, $column) {
+								return $model->mobile;
+							},
+						],
+					],
+					'searchClass' => 'common\models\UserSearch'
+				],
+			],
+        ]
+	],
     'components' => [
         'request' => [
             'csrfParam' => '_csrf-backend',
@@ -37,14 +76,23 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        /*
         'urlManager' => [
             'enablePrettyUrl' => true,
-            'showScriptName' => false,
+            'enableStrictParsing' => false,
             'rules' => [
+				'' => 'site/index'
             ],
         ],
-        */
+        'authManager' => [
+            'class' => 'yii\rbac\DbManager'
+        ],
+    ],
+    'as access' => [
+        'class' => 'mdm\admin\components\AccessControl',
+        'allowActions' => [
+            'site/*',
+            'admin/*',
+        ]
     ],
     'params' => $params,
 ];

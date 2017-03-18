@@ -38,9 +38,9 @@ class AssociationUserSearch extends AssociationUser
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
+    public function search($params, $association_id)
     {
-        $query = AssociationUser::find();
+        $query = AssociationUser::find()->where(['association_id' => $association_id]);
 
         // add conditions that should always apply here
 

@@ -38,6 +38,7 @@ class AssociationUser extends \yii\db\ActiveRecord
     {
         return [
             [['association_id', 'user_id'], 'required'],
+            [['association_id', 'user_id'], 'unique', 'targetAttribute' => ['association_id', 'user_id']],
             [['association_id', 'user_id', 'status', 'created_by', 'updated_by', 'created_at', 'updated_at'], 'integer'],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['updated_by' => 'id']],
             [['association_id'], 'exist', 'skipOnError' => true, 'targetClass' => Association::className(), 'targetAttribute' => ['association_id' => 'id']],
@@ -53,8 +54,8 @@ class AssociationUser extends \yii\db\ActiveRecord
     {
         return [
             'id' => Yii::t('app', 'ID'),
-            'association_id' => Yii::t('app', 'Association ID'),
-            'user_id' => Yii::t('app', 'User ID'),
+            'association_id' => Yii::t('app', 'Association'),
+            'user_id' => Yii::t('app', 'User'),
             'status' => Yii::t('app', 'Status'),
             'created_by' => Yii::t('app', 'Created By'),
             'updated_by' => Yii::t('app', 'Updated By'),

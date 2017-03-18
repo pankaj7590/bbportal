@@ -20,8 +20,8 @@ class m170307_185551_create_table_tournament_team extends Migration
 		
 		$this->addForeignKey('fk_tournament_team_tournament', 'tournament_team', 'tournament_id', 'tournament', 'id', 'CASCADE', 'CASCADE');
 		$this->addForeignKey('fk_tournament_team_team', 'tournament_team', 'team_id', 'team', 'id', 'CASCADE', 'CASCADE');
-		$this->addForeignKey('fk_tournament_team_user_created_by', 'team_player', 'created_by', 'user', 'id', 'SET NULL', 'SET NULL');
-		$this->addForeignKey('fk_tournamen_team_user_updated_by', 'team_player', 'updated_by', 'user', 'id', 'SET NULL', 'SET NULL');
+		$this->addForeignKey('fk_tournament_team_user_created_by', 'tournament_team', 'created_by', 'user', 'id', 'SET NULL', 'SET NULL');
+		$this->addForeignKey('fk_tournamen_team_user_updated_by', 'tournament_team', 'updated_by', 'user', 'id', 'SET NULL', 'SET NULL');
     }
 
     public function down()

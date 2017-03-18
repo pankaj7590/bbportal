@@ -3,6 +3,9 @@
 namespace common\models;
 
 use Yii;
+use common\components\UidHelper;
+use yii\behaviors\TimestampBehavior;
+use yii\behaviors\BlameableBehavior;
 
 /**
  * This is the model class for table "tournament".
@@ -31,6 +34,7 @@ use Yii;
  */
 class Tournament extends \yii\db\ActiveRecord
 {
+	public $uid = 'TOURNAMENT';
     /**
      * @inheritdoc
      */
@@ -45,12 +49,21 @@ class Tournament extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['unique_id', 'name'], 'required'],
-            [['level', 'type', 'start_date', 'end_date', 'reporting_time', 'status', 'created_by', 'updated_by', 'created_at', 'updated_at'], 'integer'],
+            [['name'], 'required'],
+            [['level', 'type', 'reporting_time', 'status', 'created_by', 'updated_by', 'created_at', 'updated_at'], 'integer'],
             [['fees'], 'number'],
             [['unique_id', 'name', 'venue'], 'string', 'max' => 255],
             [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['updated_by' => 'id']],
             [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['created_by' => 'id']],
+			[['start_date', 'end_date'], 'safe'],
+        ];
+    }
+	
+    public function behaviors()
+    {
+        return [
+            TimestampBehavior::className(),
+			BlameableBehavior::className(),
         ];
     }
 
@@ -117,4 +130,33 @@ class Tournament extends \yii\db\ActiveRecord
     {
         return $this->hasMany(TournamentTeam::className(), ['tournament_id' => 'id']);
     }
+	
+	public function beforeSave($insert){
+		if (parent::beforeSave($insert)) {
+			if(!$this->unique_id){
+				$uid = UidHelper::generate(6);
+				$temp = $this->uid.$uid;
+				while(self::findOne(['unique_id' => $temp])){
+					$temp = UidHelper::generate(6);
+				}
+				$this->updateAttributes(['unique_id' => $temp]);
+			}
+			if($this->start_date){
+				$this->start_date = str_replace('/', '-', $this->start_date);
+				$this->start_date = strtotime($this->start_date);
+			}
+			if($this->end_date){
+				$this->end_date = str_replace('/', '-', $this->end_date);
+				$this->end_date = strtotime($this->end_date);
+			}
+			return true;
+		}
+		return false;
+	}
+	
+	public function afterFind(){
+		$this->start_date = date('d/m/Y', $this->start_date);
+		$this->end_date = date('d/m/Y', $this->end_date);
+		parent::afterFind();
+	}
 }

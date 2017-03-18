@@ -7,6 +7,7 @@ use common\models\User;
 use common\models\UserSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\ForbiddenHttpException;
 use yii\filters\VerbFilter;
 
 /**
@@ -65,7 +66,11 @@ class UserController extends Controller
     {
         $model = new User();
 
+		$model->setScenario('insert');
+		
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+			$adminRole = Yii::$app->authManager->getRole('Admin');
+			Yii::$app->authManager->assign($adminRole, $model->id);
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
@@ -101,8 +106,11 @@ class UserController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
-
+		$model = $this->findModel($id);
+		if($model->isSuperAdmin()){
+			throw new ForbiddenHttpException('Super admin cannot be deleted.');
+		}
+		$model->updateAttributes(['status' => Status::DELETED]);
         return $this->redirect(['index']);
     }
 

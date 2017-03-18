@@ -12,7 +12,6 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="association-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
@@ -36,7 +35,18 @@ $this->params['breadcrumbs'][] = $this->title;
             // 'created_at',
             'updated_at',
 
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+				'class' => 'yii\grid\ActionColumn',
+				'template' => '{view} {update} {delete} {users} {players}',
+				'buttons' => [
+					'users' => function($url, $model, $key){
+						return Html::a('<span class="glyphicon glyphicon-user"></span>', ['association-user/index', 'association_id' => $model->id], ['title' => 'Users']);
+					},
+					'players' => function($url, $model, $key){
+						return Html::a('<span class="glyphicon glyphicon-user"></span>', ['association-player/index', 'association_id' => $model->id], ['title' => 'Players', 'style' => 'color:#8fc2e0']);
+					}
+				]
+			],
         ],
     ]); ?>
 <?php Pjax::end(); ?></div>

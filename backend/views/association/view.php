@@ -2,6 +2,8 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use common\models\enums\Level;
+use common\models\enums\Status;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Association */
@@ -11,8 +13,6 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Associations'), 'url
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="association-view">
-
-    <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
         <?= Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
@@ -28,17 +28,23 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'id',
+            // 'id',
             'unique_id',
             'name',
-            'level',
-            'seeding',
-            'sport',
-            'status',
-            'created_by',
-            'updated_by',
-            'created_at',
-            'updated_at',
+			[
+				'attribute' => 'level',
+				'value' => $model->level?Level::$label[$model->level]:NULL,
+			],
+            // 'seeding',
+            // 'sport',
+			[
+				'attribute' => 'status',
+				'value' => Status::$label[$model->status],
+			],
+            // 'created_by',
+            // 'updated_by',
+            // 'created_at',
+            'updated_at:datetime',
         ],
     ]) ?>
 

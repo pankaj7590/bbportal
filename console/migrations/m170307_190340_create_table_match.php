@@ -8,7 +8,7 @@ class m170307_190340_create_table_match extends Migration
     {
 		$this->createTable('match', [
 			'id' => $this->primaryKey(),
-			'uniqueid' => $this->string(),
+			'unique_id' => $this->string(),
 			'round' => $this->integer(),
 			'tournament_id' => $this->integer(),
 			'pool_id' => $this->integer(),

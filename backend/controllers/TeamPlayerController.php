@@ -3,8 +3,11 @@
 namespace backend\controllers;
 
 use Yii;
+use common\models\Team;
+use common\models\Player;
 use common\models\TeamPlayer;
 use common\models\TeamPlayerSearch;
+use common\models\enums\Status;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -33,14 +36,16 @@ class TeamPlayerController extends Controller
      * Lists all TeamPlayer models.
      * @return mixed
      */
-    public function actionIndex()
+    public function actionIndex($team_id)
     {
+		$team = $this->findTeam($team_id);
         $searchModel = new TeamPlayerSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams,$team_id);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'team' => $team,
         ]);
     }
 
@@ -64,12 +69,22 @@ class TeamPlayerController extends Controller
     public function actionCreate()
     {
         $model = new TeamPlayer();
+		$teams = Team::findAll(['status' => Status::ACTIVE]);
+		$players = Player::findAll(['status' => Status::ACTIVE]);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())) {
+			foreach($model->player_id as $k => $v){
+				$teamPlayer = new TeamPlayer();
+				$teamPlayer->team_id = $model->team_id;
+				$teamPlayer->player_id = $v;
+				$teamPlayer->save();
+			}
+            return $this->redirect(['index', 'team_id' => $model->team_id]);
         } else {
             return $this->render('create', [
                 'model' => $model,
+                'teams' => $teams,
+                'players' => $players,
             ]);
         }
     }
@@ -101,9 +116,9 @@ class TeamPlayerController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
+		$model = $this->findModel($id);
+		$model->updateAttributes(['status' => Status::DELETED]);
+        return $this->redirect(['index', 'team_id' => $model->team_id]);
     }
 
     /**
@@ -116,6 +131,15 @@ class TeamPlayerController extends Controller
     protected function findModel($id)
     {
         if (($model = TeamPlayer::findOne($id)) !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+    }
+	
+    protected function findTeam($id)
+    {
+        if (($model = Team::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

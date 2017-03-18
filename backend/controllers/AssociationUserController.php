@@ -3,8 +3,11 @@
 namespace backend\controllers;
 
 use Yii;
+use common\models\Association;
+use common\models\User;
 use common\models\AssociationUser;
 use common\models\AssociationUserSearch;
+use common\models\enums\Status;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -33,12 +36,14 @@ class AssociationUserController extends Controller
      * Lists all AssociationUser models.
      * @return mixed
      */
-    public function actionIndex()
+    public function actionIndex($association_id)
     {
+		$association = $this->findAssociaction($association_id);
         $searchModel = new AssociationUserSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $association_id);
 
         return $this->render('index', [
+			'association' => $association,
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
@@ -61,15 +66,31 @@ class AssociationUserController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+    public function actionCreate($association_id)
     {
+		$association = $this->findAssociaction($association_id);
         $model = new AssociationUser();
+		$associations = Association::findAll(['status' => Status::ACTIVE]);
+		$users = User::find()->where(['status' => Status::ACTIVE])
+					->join('LEFT JOIN','auth_assignment','auth_assignment.user_id = id')
+					->where(['<>', 'auth_assignment.item_name', 'Super Admin'])
+					->all();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())){
+			// echo "<pre>";print_r($model);exit;
+			foreach($model->user_id as $k => $v){
+				$assocUser = new AssociationUser();
+				$assocUser->association_id = $model->association_id;
+				$assocUser->user_id = $v;
+				$assocUser->save();
+			}
+            return $this->redirect(['index', 'association_id' => $association_id]);
         } else {
             return $this->render('create', [
                 'model' => $model,
+                'association' => $association,
+                'associations' => $associations,
+                'users' => $users,
             ]);
         }
     }
@@ -83,12 +104,19 @@ class AssociationUserController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+		$associations = Association::findAll(['status' => Status::ACTIVE]);
+		$users = User::find()->where(['status' => Status::ACTIVE])
+					->join('LEFT JOIN','auth_assignment','auth_assignment.user_id = id')
+					->where(['<>', 'auth_assignment.item_name', 'Super Admin'])
+					->all();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [
                 'model' => $model,
+                'associations' => $associations,
+                'users' => $users,
             ]);
         }
     }
@@ -101,8 +129,8 @@ class AssociationUserController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
-
+		$model = $this->findModel($id);
+		$model->updateAttributes(['status' => Status::DELETED]);
         return $this->redirect(['index']);
     }
 
@@ -116,6 +144,15 @@ class AssociationUserController extends Controller
     protected function findModel($id)
     {
         if (($model = AssociationUser::findOne($id)) !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+    }
+	
+    protected function findAssociaction($id)
+    {
+        if (($model = Association::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

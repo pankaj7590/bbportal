@@ -3,6 +3,8 @@
 namespace common\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\behaviors\BlameableBehavior;
 
 /**
  * This is the model class for table "tournament_team".
@@ -43,9 +45,20 @@ class TournamentTeam extends \yii\db\ActiveRecord
     {
         return [
             [['tournament_id', 'team_id'], 'required'],
-            [['tournament_id', 'team_id', 'fees_paid', 'status', 'created_by', 'updated_by', 'created_at', 'updated_at'], 'integer'],
+            [['tournament_id', 'team_id'], 'unique', 'targetAttribute' => ['tournament_id' , 'team_id']],
+            [['tournament_id', 'fees_paid', 'status', 'created_by', 'updated_by', 'created_at', 'updated_at'], 'integer'],
             [['team_id'], 'exist', 'skipOnError' => true, 'targetClass' => Team::className(), 'targetAttribute' => ['team_id' => 'id']],
             [['tournament_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tournament::className(), 'targetAttribute' => ['tournament_id' => 'id']],
+            [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['updated_by' => 'id']],
+            [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['created_by' => 'id']],
+        ];
+    }
+	
+    public function behaviors()
+    {
+        return [
+            TimestampBehavior::className(),
+			BlameableBehavior::className(),
         ];
     }
 
@@ -56,8 +69,8 @@ class TournamentTeam extends \yii\db\ActiveRecord
     {
         return [
             'id' => Yii::t('app', 'ID'),
-            'tournament_id' => Yii::t('app', 'Tournament ID'),
-            'team_id' => Yii::t('app', 'Team ID'),
+            'tournament_id' => Yii::t('app', 'Tournament'),
+            'team_id' => Yii::t('app', 'Team'),
             'fees_paid' => Yii::t('app', 'Fees Paid'),
             'status' => Yii::t('app', 'Status'),
             'created_by' => Yii::t('app', 'Created By'),
@@ -130,4 +143,20 @@ class TournamentTeam extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Tournament::className(), ['id' => 'tournament_id']);
     }
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUpdatedBy()
+    {
+        return $this->hasOne(User::className(), ['id' => 'updated_by']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCreatedBy()
+    {
+        return $this->hasOne(User::className(), ['id' => 'created_by']);
+    }
+
 }
