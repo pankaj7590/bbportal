@@ -123,9 +123,10 @@ class TournamentTeamController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+		$model = $this->findModel($id);
+		$model->delete();
 
-        return $this->redirect(['index']);
+        return $this->redirect(['index', 'tournament_id' => $model->tournament_id]);
     }
 
     /**

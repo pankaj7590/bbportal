@@ -19,7 +19,7 @@ class MatchSearch extends Match
     {
         return [
             [['id', 'round', 'tournament_id', 'pool_id', 'first_team_id', 'second_team_id', 'toss_winning_team_id', 'choice', 'winning_team_id', 'status', 'created_by', 'updated_by', 'created_at', 'updated_at'], 'integer'],
-            [['uniqueid', 'refree_name', 'scorer_name'], 'safe'],
+            [['unique_id', 'refree_name', 'scorer_name'], 'safe'],
         ];
     }
 
@@ -75,7 +75,7 @@ class MatchSearch extends Match
             'updated_at' => $this->updated_at,
         ]);
 
-        $query->andFilterWhere(['like', 'uniqueid', $this->uniqueid])
+        $query->andFilterWhere(['like', 'unique_id', $this->unique_id])
             ->andFilterWhere(['like', 'refree_name', $this->refree_name])
             ->andFilterWhere(['like', 'scorer_name', $this->scorer_name]);
 

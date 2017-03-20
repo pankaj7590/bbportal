@@ -24,7 +24,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 'method' => 'post',
             ],
         ]) ?>
-        <?= Html::a(Yii::t('app', 'Generate Lots'), ['generate-lots', 'tournament_id' => $model->id], ['class' => 'btn btn-info']) ?>
+
+		<?= Html::a(Yii::t('app', 'Generate Lots'), ['generate-lots', 'tournament_id' => $model->id], ['class' => 'btn btn-info']) ?>
+		<?= Html::a(Yii::t('app', 'Change Lots'), ['change-lots', 'tournament_id' => $model->id], ['class' => 'btn btn-warning']) ?>
+		<?= Html::a(Yii::t('app', 'Matches'), ['match/index', 'tournament_id' => $model->id], ['class' => 'btn btn-default']) ?>
     </p>
 
     <?= DetailView::widget([

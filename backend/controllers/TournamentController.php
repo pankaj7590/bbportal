@@ -3,12 +3,15 @@
 namespace backend\controllers;
 
 use Yii;
+use common\models\Pool;
+use common\models\PoolTeam;
 use common\models\Tournament;
 use common\models\TournamentTeam;
 use common\models\TournamentSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\BadRequestHttpException;
+use yii\web\ForbiddenHttpException;
 use yii\filters\VerbFilter;
 
 /**
@@ -127,6 +130,9 @@ class TournamentController extends Controller
 	public function actionGenerateLots($tournament_id){
 		$maxTeams = Yii::$app->request->post('max-teams');
 		$tournament = $this->findModel($tournament_id);
+		/* if($tournament->pools){
+			throw new ForbiddenHttpException('Pools already generated.');
+		} */
 		if($maxTeams){
 			// $teams = ['t1','t2','t3','t4','t5','t6','t7','t8','t9','t10','t11','t12','t13','t14','t15'];
 			$teams = TournamentTeam::find()->select('id')->where(['tournament_id' => $tournament_id])->asArray()->all();
@@ -157,10 +163,63 @@ class TournamentController extends Controller
 			if($remainingTeams){
 				$pools[] = $remainingTeams;
 			}
-			echo "<pre>";print_r($pools);exit;
+			foreach($pools as $k => $v){
+				$pool = new Pool();
+				$pool->tournament_id = $tournament->id;
+				$pool->name = 'pool'.($k+1);
+				if($pool->save()){
+					foreach($v as $ptk => $ptv){
+						$poolTeam = new PoolTeam();
+						$poolTeam->pool_id = $pool->id;
+						$poolTeam->team_id = $ptv;
+						$poolTeam->save();
+					}
+				}
+			}
+			return $this->redirect(['change-lots', 'id' => $tournament->id]);
 		}
 		return $this->render('generate-lots', [
 			'tournament' => $tournament,
 		]);
+	}
+	
+	public function actionChangeLots($tournament_id){
+		$tournament = $this->findModel($tournament_id);
+		if(!$tournament->pools){
+			throw new ForbiddenHttpException('Generate pools first.');
+		}
+		return $this->render('change_lots', [
+			'tournament' => $tournament,
+			'pools' => $tournament->pools,
+		]);
+	}
+	
+	public function actionUpdateLots(){
+		$tournament = Yii::$app->request->post('tournament');
+		$pool = Yii::$app->request->post('pool');
+		$team = Yii::$app->request->post('team');
+		$pool_team = Yii::$app->request->post('pool_team');
+		if(!$tournament){
+			throw new BadRequestHttpException('Tournament id cannot be blank.');
+		}
+		if(!$pool){
+			throw new BadRequestHttpException('Pool id cannot be blank.');
+		}
+		if(!$team){
+			throw new BadRequestHttpException('Team id cannot be blank.');
+		}
+		if(!$pool_team){
+			throw new BadRequestHttpException('Pool team id cannot be blank.');
+		}
+		$poolTeam = PoolTeam::findOne($pool_team);
+		if(!$pool_team){
+			throw new NotFoundHttpException('Team not found in the pool.');
+		}
+		$tournamentPool = Pool::findOne(['tournament_id' => $tournament, 'id' => $pool]);
+		if(!$tournamentPool){
+			throw new NotFoundHttpException('Pool not found in the tournament.');
+		}
+		$poolTeam->updateAttributes(['pool_id' => $pool]);
+		return true;
 	}
 }

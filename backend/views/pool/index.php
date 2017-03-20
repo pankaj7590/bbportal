@@ -3,6 +3,8 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
+
+use common\models\enums\Status;
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\PoolSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -12,28 +14,30 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="pool-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+	<?php Pjax::begin(); ?>    
+		<?= GridView::widget([
+			'dataProvider' => $dataProvider,
+			'filterModel' => $searchModel,
+			'columns' => [
+				['class' => 'yii\grid\SerialColumn'],
 
-    <p>
-        <?= Html::a(Yii::t('app', 'Create Pool'), ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
-<?php Pjax::begin(); ?>    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
-            'id',
-            'tournament_id',
-            'name',
-            'status',
-            'created_by',
-            // 'updated_by',
-            // 'created_at',
-            // 'updated_at',
-
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
-    ]); ?>
-<?php Pjax::end(); ?></div>
+				// 'id',
+				[
+					'attribute' => 'tournament_id',
+					'value' => function($data){
+						return $data->tournament->name;
+					},
+				],
+				'name',
+				[
+					'attribute' => 'status',
+					'value' => function($data){
+						return Status::$label[$data->status];
+					},
+				],
+				
+				['class' => 'yii\grid\ActionColumn'],
+			],
+		]); ?>
+	<?php Pjax::end(); ?>
+</div>

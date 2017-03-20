@@ -3,6 +3,7 @@
 namespace backend\controllers;
 
 use Yii;
+use common\models\Tournament;
 use common\models\Match;
 use common\models\MatchSearch;
 use yii\web\Controller;
@@ -33,12 +34,14 @@ class MatchController extends Controller
      * Lists all Match models.
      * @return mixed
      */
-    public function actionIndex()
+    public function actionIndex($tournament_id)
     {
+		$tournament = $this->findTournament($tournament_id);
         $searchModel = new MatchSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $tournament_id);
 
         return $this->render('index', [
+			'tournament' => $tournament,
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
@@ -61,14 +64,17 @@ class MatchController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+    public function actionCreate($tournament_id)
     {
+		$tournament = $this->findTournament($tournament_id);
         $model = new Match();
 
+		$model->tournament_id = $tournament->id;
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [
+                'tournament' => $tournament,
                 'model' => $model,
             ]);
         }
@@ -83,12 +89,30 @@ class MatchController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+		$tournament = $this->findTournament($model->tournament_id);
 
+		$model->tournament_id = $tournament->id;
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
+			$pool_teams_arr = [];
+			foreach($model->pool->poolTeams as $k => $v){
+				$pool_teams_arr[] = $v->team;
+			}
             return $this->render('update', [
+                'tournament' => $tournament,
                 'model' => $model,
+				'pool_teams' => $pool_teams_arr,
+				'selected_pool_teams' => [
+					[
+						'id' => $model->first_team_id,
+						'name' => $model->firstTeam->team->name,
+					],
+					[
+						'id' => $model->second_team_id,
+						'name' => $model->secondTeam->team->name,
+					]
+				],
             ]);
         }
     }
@@ -116,6 +140,15 @@ class MatchController extends Controller
     protected function findModel($id)
     {
         if (($model = Match::findOne($id)) !== null) {
+            return $model;
+        } else {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+    }
+	
+    protected function findTournament($id)
+    {
+        if (($model = Tournament::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

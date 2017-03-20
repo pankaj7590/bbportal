@@ -53,8 +53,9 @@ class Match extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['round', 'tournament_id', 'pool_id', 'first_team_id', 'second_team_id'], 'unique', 'targetAttribute' => ['round', 'tournament_id', 'pool_id', 'first_team_id', 'second_team_id']],
             [['round', 'tournament_id', 'pool_id', 'first_team_id', 'second_team_id', 'toss_winning_team_id', 'choice', 'winning_team_id', 'status', 'created_by', 'updated_by', 'created_at', 'updated_at'], 'integer'],
-            [['first_team_id', 'second_team_id'], 'required'],
+            [['round', 'tournament_id', 'pool_id', 'first_team_id', 'second_team_id'], 'required'],
             [['unique_id', 'refree_name', 'scorer_name'], 'string', 'max' => 255],
             [['winning_team_id'], 'exist', 'skipOnError' => true, 'targetClass' => TournamentTeam::className(), 'targetAttribute' => ['winning_team_id' => 'id']],
             [['pool_id'], 'exist', 'skipOnError' => true, 'targetClass' => Pool::className(), 'targetAttribute' => ['pool_id' => 'id']],
@@ -82,15 +83,15 @@ class Match extends \yii\db\ActiveRecord
             'id' => Yii::t('app', 'ID'),
             'unique_id' => Yii::t('app', 'Unique Id'),
             'round' => Yii::t('app', 'Round'),
-            'tournament_id' => Yii::t('app', 'Tournament ID'),
-            'pool_id' => Yii::t('app', 'Pool ID'),
-            'first_team_id' => Yii::t('app', 'First Team ID'),
-            'second_team_id' => Yii::t('app', 'Second Team ID'),
-            'toss_winning_team_id' => Yii::t('app', 'Toss Winning Team ID'),
+            'tournament_id' => Yii::t('app', 'Tournament'),
+            'pool_id' => Yii::t('app', 'Pool'),
+            'first_team_id' => Yii::t('app', 'First Team'),
+            'second_team_id' => Yii::t('app', 'Second Team'),
+            'toss_winning_team_id' => Yii::t('app', 'Toss Winning Team'),
             'choice' => Yii::t('app', 'Choice'),
             'refree_name' => Yii::t('app', 'Refree Name'),
             'scorer_name' => Yii::t('app', 'Scorer Name'),
-            'winning_team_id' => Yii::t('app', 'Winning Team ID'),
+            'winning_team_id' => Yii::t('app', 'Winning Team'),
             'status' => Yii::t('app', 'Status'),
             'created_by' => Yii::t('app', 'Created By'),
             'updated_by' => Yii::t('app', 'Updated By'),
@@ -154,6 +155,14 @@ class Match extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Set::className(), ['match_id' => 'id']);
     }
+	
+	public function getCreatedBy(){
+		return $this->hasOne(User::className(), ['id' => 'created_by']);
+	}
+	
+	public function getUpdatedBy(){
+		return $this->hasOne(User::className(), ['id' => 'updated_by']);
+	}
 	
 	public function beforeSave($insert){
 		if (parent::beforeSave($insert)) {

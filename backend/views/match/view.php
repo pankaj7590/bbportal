@@ -2,6 +2,8 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use common\models\enums\Choice;
+use common\models\enums\Status;
 
 /* @var $this yii\web\View */
 /* @var $model common\models\Match */
@@ -11,8 +13,6 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Matches'), 'url' => 
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="match-view">
-
-    <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
         <?= Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
@@ -28,23 +28,53 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'id',
-            'uniqueid',
+            // 'id',
+            'unique_id',
             'round',
-            'tournament_id',
-            'pool_id',
-            'first_team_id',
-            'second_team_id',
-            'toss_winning_team_id',
-            'choice',
+			[
+				'attribute' => 'tournament_id',
+				'value' => $model->tournament?$model->tournament->name:NULL,
+			],
+			[
+				'attribute' => 'pool_id',
+				'value' => $model->pool->name,
+			],
+			[
+				'attribute' => 'first_team_id',
+				'value' => $model->firstTeam->team->name,
+			],
+			[
+				'attribute' => 'second_team_id',
+				'value' => $model->secondTeam->team->name,
+			],
+			[
+				'attribute' => 'toss_winning_team_id',
+				'value' => $model->tossWinningTeam->team->name,
+			],
+			[
+				'attribute' => 'choice',
+				'value' => Choice::$label[$model->choice],
+			],
             'refree_name',
             'scorer_name',
-            'winning_team_id',
-            'status',
-            'created_by',
-            'updated_by',
-            'created_at',
-            'updated_at',
+			[
+				'attribute' => 'winning_team_id',
+				'value' => $model->winningTeam?$model->winningTeam->team->name:NULL,
+			],
+			[
+				'attribute' => 'choice',
+				'value' => Status::$label[$model->status],
+			],
+			[
+				'attribute' => 'created_by',
+				'value' => $model->createdBy->name,
+			],
+			[
+				'attribute' => 'updated_by',
+				'value' => $model->updatedBy->name,
+			],
+            'created_at:datetime',
+            'updated_at:datetime',
         ],
     ]) ?>
 

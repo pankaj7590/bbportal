@@ -6,7 +6,7 @@ use yii\helpers\Html;
 /* @var $model common\models\Tournament */
 /* @var $form yii\widgets\ActiveForm */
 
-$this->title = Yii::t('app', 'Update {modelClass}: ', [
+$this->title = Yii::t('app', '{modelClass}: ', [
     'modelClass' => 'Generate Lots',
 ]) . $tournament->name;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Tournaments'), 'url' => ['index']];

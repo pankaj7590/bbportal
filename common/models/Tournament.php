@@ -7,6 +7,8 @@ use common\components\UidHelper;
 use yii\behaviors\TimestampBehavior;
 use yii\behaviors\BlameableBehavior;
 
+use common\models\enums\Status;
+
 /**
  * This is the model class for table "tournament".
  *
@@ -104,7 +106,7 @@ class Tournament extends \yii\db\ActiveRecord
      */
     public function getPools()
     {
-        return $this->hasMany(Pool::className(), ['tournament_id' => 'id']);
+        return $this->hasMany(Pool::className(), ['tournament_id' => 'id'])->andWhere(['!=', 'pool.status', Status::DELETED]);
     }
 
     /**

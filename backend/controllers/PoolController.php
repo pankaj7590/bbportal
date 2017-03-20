@@ -5,6 +5,7 @@ namespace backend\controllers;
 use Yii;
 use common\models\Pool;
 use common\models\PoolSearch;
+use common\models\enums\Status;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -24,6 +25,7 @@ class PoolController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
+                    'teams' => ['POST'],
                 ],
             ],
         ];
@@ -121,4 +123,23 @@ class PoolController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+	
+	public function actionTeams(){
+		$pool_id = Yii::$app->request->post('pool');
+		if($pool_id){
+			$model = $this->findModel($pool_id);
+			$pool_teams = $model->poolTeams;
+			if($pool_teams){
+				$pool_teams_arr = [];
+				foreach($pool_teams as $k => $v){
+					$pool_teams_arr[] = [
+						'id' => $v->team_id,
+						'name' => $v->team->name,
+					];
+				}
+				return json_encode($pool_teams_arr);
+			}
+		}
+		return false;
+	}
 }

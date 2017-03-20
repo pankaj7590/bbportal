@@ -59,10 +59,19 @@ $this->params['breadcrumbs'][] = $this->title;
 
             [
 				'class' => 'yii\grid\ActionColumn',
-				'template' => '{view} {update} {delete} {teams}',
+				'template' => '{view} {update} {delete} {teams} {generate_lots} {change_lots} {matches}',
 				'buttons' => [
 					'teams' => function($url, $model, $key){
 						return Html::a('<span class="glyphicon glyphicon-user"></span>', ['tournament-team/index', 'tournament_id' => $model->id], ['title' => 'Teams']);
+					},
+					'generate_lots' => function($url, $model, $key){
+						return Html::a('<span class="glyphicon glyphicon-transfer"></span>', ['generate-lots', 'tournament_id' => $model->id], ['title' => 'Generate Lots']);
+					},
+					'change_lots' => function($url, $model, $key){
+						return Html::a('<span class="glyphicon glyphicon-refresh"></span>', ['change-lots', 'tournament_id' => $model->id], ['title' => 'Change Lots']);
+					},
+					'matches' => function($url, $model, $key){
+						return Html::a('<span class="glyphicon glyphicon-list-alt"></span>', ['match/index', 'tournament_id' => $model->id], ['title' => 'Matches']);
 					},
 				],
 			],
