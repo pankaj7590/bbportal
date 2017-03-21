@@ -9,6 +9,7 @@ use common\models\MatchSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use kartik\mpdf\Pdf;
 
 /**
  * MatchController implements the CRUD actions for Match model.
@@ -129,6 +130,19 @@ class MatchController extends Controller
 		$model->updateAttributes(['status' => Status::DELETED]);
         return $this->redirect(['index']);
     }
+	
+	public function actionScoresheet($id){
+		$model = $this->findModel($id);
+		$content = $this->renderPartial('_scoresheet');
+		$pdf = Yii::$app->pdf;
+		$pdf->content = $content;
+		$pdf->marginTop = 10;
+		$pdf->marginBottom = 10;
+		$pdf->marginLeft = 10;
+		$pdf->marginRight = 10;
+		$pdf->filename = $model->firstTeam->team->name.' vs '.$model->secondTeam->team->name;
+		return $pdf->render();
+	}
 
     /**
      * Finds the Match model based on its primary key value.

@@ -46,7 +46,15 @@ $this->params['breadcrumbs'][] = 'Matches';
 					},
 				],
 
-				['class' => 'yii\grid\ActionColumn'],
+				[
+					'class' => 'yii\grid\ActionColumn',
+					'template' => '{view} {update} {delete} {scoresheet}',
+					'buttons' => [
+						'scoresheet' => function($url, $model, $key){
+							return Html::a('<span class="glyphicon glyphicon-duplicate"></span>', ['match/scoresheet', 'id' => $model->id], ['title' => 'Download Scoresheet']);
+						},
+					],
+				],
 			],
 		]); ?>
 	<?php Pjax::end(); ?>
