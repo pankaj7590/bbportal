@@ -5,6 +5,13 @@ return [
 	'name' => 'BB Portal',
     'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
     'components' => [
+        'db' => [
+            'class' => 'yii\db\Connection',
+            'dsn' => 'mysql:host=salokhedb.cz5clg6acpou.ap-southeast-1.rds.amazonaws.com;dbname=bbportal',
+            'username' => 'salokheaws',
+            'password' => 'sal0kh3aw5',
+            'charset' => 'utf8',
+        ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
