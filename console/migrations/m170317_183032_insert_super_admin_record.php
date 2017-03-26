@@ -3,7 +3,7 @@
 use yii\db\Migration;
 use common\models\User;
 
-class m170308_183032_insert_super_admin_record extends Migration
+class m170317_183032_insert_super_admin_record extends Migration
 {
     public function safeUp()
     {

@@ -6,7 +6,7 @@ class m170316_185147_alter_table_tournament_team_add_foreign_keys_to_created_by_
 {
     public function up()
     {
-		$this->addForeignKey('fk_tournament_team_user_created_by', 'tournament_team', 'created_by', 'user', 'id', 'CASCADE', 'CASCADE');
+		$this->addForeignKey('fk_tournament_team_user_created_by_user', 'tournament_team', 'created_by', 'user', 'id', 'CASCADE', 'CASCADE');
 		$this->addForeignKey('fk_tournament_team_user_updated_by', 'tournament_team', 'updated_by', 'user', 'id', 'CASCADE', 'CASCADE');
     }
 
