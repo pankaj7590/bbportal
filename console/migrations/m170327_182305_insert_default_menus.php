@@ -1,6 +1,7 @@
 <?php
 
 use yii\db\Migration;
+use mdm\admin\models\Menu;
 
 class m170327_182305_insert_default_menus extends Migration
 {
@@ -41,156 +42,157 @@ class m170327_182305_insert_default_menus extends Migration
 		]);
 		
 		//create submenus
+		$menu = Menu::find()->select('id')->asArray();
 		$this->insert("menu",[
 			"name" => 'Create Association',
-			'parent' => 'Association',
+			'parent' => $menu->where('name' => 'Association')->one(),
 			"route" => '/association/create',
 		]);
 		$this->insert("menu",[
 			"name" => 'Manage Association',
-			'parent' => 'Association',
+			'parent' => $menu->where('name' => 'Association')->one(),
 			"route" => '/association/index',
 		]);
 		
 		$this->insert("menu",[
 			"name" => 'Create Match',
-			'parent' => 'Match',
+			'parent' => $menu->where('name' => 'Match')->one(),
 			"route" => '/match/create',
 		]);
 		$this->insert("menu",[
 			"name" => 'Manage Matches',
-			'parent' => 'Match',
+			'parent' => $menu->where('name' => 'Match')->one(),
 			"route" => '/match/index',
 		]);
 		
 		$this->insert("menu",[
 			"name" => 'Create Player',
-			'parent' => 'Player',
+			'parent' => $menu->where('name' => 'Player')->one(),
 			"route" => '/player/create',
 		]);
 		$this->insert("menu",[
 			"name" => 'Manage Players',
-			'parent' => 'Player',
+			'parent' => $menu->where('name' => 'Player')->one(),
 			"route" => '/player/index',
 		]);
 		
 		$this->insert("menu",[
 			"name" => 'Create Pool',
-			'parent' => 'Pool',
+			'parent' => $menu->where('name' => 'Pool')->one(),
 			"route" => '/pool/create',
 		]);
 		$this->insert("menu",[
 			"name" => 'Manage Pools',
-			'parent' => 'Pool',
+			'parent' => $menu->where('name' => 'Pool')->one(),
 			"route" => '/pool/index',
 		]);
 		
 		$this->insert("menu",[
 			"name" => 'Create Team',
-			'parent' => 'Team',
+			'parent' => $menu->where('name' => 'Team')->one(),
 			"route" => '/team/create',
 		]);
 		$this->insert("menu",[
 			"name" => 'Manage Teams',
-			'parent' => 'Team',
+			'parent' => $menu->where('name' => 'Team')->one(),
 			"route" => '/team/index',
 		]);
 		
 		$this->insert("menu",[
 			"name" => 'Create Tournament',
-			'parent' => 'Tournament',
+			'parent' => $menu->where('name' => 'Tournament')->one(),
 			"route" => '/tournament/create',
 		]);
 		$this->insert("menu",[
 			"name" => 'Manage Tournaments',
-			'parent' => 'Tournament',
+			'parent' => $menu->where('name' => 'Tournament')->one(),
 			"route" => '/tournament/index',
 		]);
 		
 		$this->insert("menu",[
 			"name" => 'Create User',
-			'parent' => 'User',
+			'parent' => $menu->where('name' => 'User')->one(),
 			"route" => '/user/create',
 		]);
 		$this->insert("menu",[
 			"name" => 'Manage Users',
-			'parent' => 'User',
+			'parent' => $menu->where('name' => 'User')->one(),
 			"route" => '/user/index',
 		]);
 		
 		$this->insert("menu",[
 			"name" => 'Assignment',
-			'parent' => 'User Settings',
+			'parent' => $menu->where('name' => 'User Settings')->one(),
 			"route" => '/#',
 		]);
 		$this->insert("menu",[
 			"name" => 'Menu',
-			'parent' => 'User Settings',
+			'parent' => $menu->where('name' => 'User Settings')->one(),
 			"route" => '/#',
 		]);
 		$this->insert("menu",[
 			"name" => 'Permission',
-			'parent' => 'User Settings',
+			'parent' => $menu->where('name' => 'User Settings')->one(),
 			"route" => '/#',
 		]);
 		$this->insert("menu",[
 			"name" => 'Role',
-			'parent' => 'User Settings',
+			'parent' => $menu->where('name' => 'User Settings')->one(),
 			"route" => '/#',
 		]);
 		$this->insert("menu",[
 			"name" => 'Route',
-			'parent' => 'User Settings',
+			'parent' => $menu->where('name' => 'User Settings')->one(),
 			"route" => '/#',
 		]);
 		
 		$this->insert("menu",[
 			"name" => 'Manage Assignments',
-			'parent' => 'Assignment',
+			'parent' => $menu->where('name' => 'Assignment')->one(),
 			"route" => '/admin/assignment/index',
 		]);
 		
 		$this->insert("menu",[
 			"name" => 'Create Menu',
-			'parent' => 'Menu',
+			'parent' => $menu->where('name' => 'Menu')->one(),
 			"route" => '/admin/menu/create',
 		]);
 		$this->insert("menu",[
 			"name" => 'Manage Menus',
-			'parent' => 'Menu',
+			'parent' => $menu->where('name' => 'Menu')->one(),
 			"route" => '/admin/menu/index',
 		]);
 		
 		$this->insert("menu",[
 			"name" => 'Create Permission',
-			'parent' => 'Permission',
+			'parent' => $menu->where('name' => 'Permission')->one(),
 			"route" => '/admin/permission/create',
 		]);
 		$this->insert("menu",[
 			"name" => 'Manage Permissions',
-			'parent' => 'Permission',
+			'parent' => $menu->where('name' => 'Permission')->one(),
 			"route" => '/admin/permission/index',
 		]);
 		
 		$this->insert("menu",[
 			"name" => 'Create Role',
-			'parent' => 'Role',
+			'parent' => $menu->where('name' => 'Role')->one(),
 			"route" => '/admin/role/create',
 		]);
 		$this->insert("menu",[
 			"name" => 'Manage Roles',
-			'parent' => 'Role',
+			'parent' => $menu->where('name' => 'Role')->one(),
 			"route" => '/admin/role/index',
 		]);
 		
 		$this->insert("menu",[
 			"name" => 'Create Route',
-			'parent' => 'Route',
+			'parent' => $menu->where('name' => 'Route')->one(),
 			"route" => '/admin/route/create',
 		]);
 		$this->insert("menu",[
 			"name" => 'Manage Routes',
-			'parent' => 'Route',
+			'parent' => $menu->where('name' => 'Route')->one(),
 			"route" => '/admin/route/index',
 		]);
 		
