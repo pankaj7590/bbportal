@@ -8,6 +8,7 @@ use common\models\PoolTeam;
 use common\models\Tournament;
 use common\models\TournamentTeam;
 use common\models\TournamentSearch;
+use common\models\enums\Status;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\BadRequestHttpException;

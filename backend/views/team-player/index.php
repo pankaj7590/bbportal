@@ -9,9 +9,9 @@ use common\models\enums\Status;
 /* @var $searchModel common\models\TeamPlayerSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app', 'Team Players');
+$this->title = $team->name.' '.Yii::t('app', 'Team Players');
 $this->params['breadcrumbs'][] = ['label' => $team->name, 'url' => ['team/view', 'id'=> $team->id]];
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = Yii::t('app', 'Team Players');
 ?>
 <div class="team-player-index">
 

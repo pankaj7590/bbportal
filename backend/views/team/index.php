@@ -42,7 +42,7 @@ $this->params['breadcrumbs'][] = $this->title;
 				'template' => '{view} {update} {delete} {players}',
 				'buttons' => [
 					'players' => function($url, $model, $key){
-						return Html::a('<span class="glyphicon glyphicon-user"></span>', ['team-player/index', 'team_id' => $model->id], ['title' => 'Players']);
+						return Html::a('<span class="glyphicon glyphicon-user"></span>', ['team-player/index', 'team_id' => $model->id], ['title' => 'Players', 'data-pjax' => 0]);
 					}
 				]
 			],
