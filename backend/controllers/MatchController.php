@@ -71,14 +71,15 @@ class MatchController extends Controller
         $model = new Match();
 
 		$model->tournament_id = $tournament->id;
+		$pool_teams_arr = [];
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
-        } else {
-            return $this->render('create', [
-                'tournament' => $tournament,
-                'model' => $model,
-            ]);
         }
+		return $this->render('create', [
+			'tournament' => $tournament,
+			'model' => $model,
+			'pool_teams' => $pool_teams_arr,
+		]);
     }
 
     /**
