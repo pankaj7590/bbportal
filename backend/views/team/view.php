@@ -35,7 +35,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'name',
 			[
 				'attribute' => 'association_id',
-				'value' => $model->association->name,
+				'value' => $model->association?$model->association->name:NULL,
 			],
 			[
 				'attribute' => 'level',
