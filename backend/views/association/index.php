@@ -47,10 +47,10 @@ $this->params['breadcrumbs'][] = $this->title;
 				'template' => '{view} {update} {delete} {users} {players}',
 				'buttons' => [
 					'users' => function($url, $model, $key){
-						return Html::a('<span class="glyphicon glyphicon-user"></span>', ['association-user/index', 'association_id' => $model->id], ['title' => 'Users']);
+						return Html::a('<span class="glyphicon glyphicon-user"></span>', ['association-user/index', 'association_id' => $model->id], ['title' => 'Users', 'data-pjax' => 0]);
 					},
 					'players' => function($url, $model, $key){
-						return Html::a('<span class="glyphicon glyphicon-user"></span>', ['association-player/index', 'association_id' => $model->id], ['title' => 'Players', 'style' => 'color:#8fc2e0']);
+						return Html::a('<span class="glyphicon glyphicon-user"></span>', ['association-player/index', 'association_id' => $model->id], ['title' => 'Players', 'style' => 'color:#8fc2e0', 'data-pjax' => 0]);
 					}
 				]
 			],
