@@ -79,6 +79,7 @@ class MatchController extends Controller
 			'tournament' => $tournament,
 			'model' => $model,
 			'pool_teams' => $pool_teams_arr,
+			'selected_pool_teams' => [],
 		]);
     }
 

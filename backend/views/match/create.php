@@ -17,6 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
 		'tournament' => $tournament,
         'model' => $model,
 		'pool_teams' => $pool_teams,
+		'selected_pool_teams' => $selected_pool_teams,
     ]) ?>
 
 </div>
