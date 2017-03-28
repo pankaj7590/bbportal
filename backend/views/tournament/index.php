@@ -62,16 +62,16 @@ $this->params['breadcrumbs'][] = $this->title;
 				'template' => '{view} {update} {delete} {teams} {generate_lots} {change_lots} {matches}',
 				'buttons' => [
 					'teams' => function($url, $model, $key){
-						return Html::a('<span class="glyphicon glyphicon-user"></span>', ['tournament-team/index', 'tournament_id' => $model->id], ['title' => 'Teams']);
+						return Html::a('<span class="glyphicon glyphicon-user"></span>', ['tournament-team/index', 'tournament_id' => $model->id], ['title' => 'Teams', 'data-pjax' => 0]);
 					},
 					'generate_lots' => function($url, $model, $key){
-						return Html::a('<span class="glyphicon glyphicon-transfer"></span>', ['generate-lots', 'tournament_id' => $model->id], ['title' => 'Generate Lots']);
+						return Html::a('<span class="glyphicon glyphicon-transfer"></span>', ['generate-lots', 'tournament_id' => $model->id], ['title' => 'Generate Lots', 'data-pjax' => 0]);
 					},
 					'change_lots' => function($url, $model, $key){
-						return Html::a('<span class="glyphicon glyphicon-refresh"></span>', ['change-lots', 'tournament_id' => $model->id], ['title' => 'Change Lots']);
+						return Html::a('<span class="glyphicon glyphicon-refresh"></span>', ['change-lots', 'tournament_id' => $model->id], ['title' => 'Change Lots', 'data-pjax' => 0]);
 					},
 					'matches' => function($url, $model, $key){
-						return Html::a('<span class="glyphicon glyphicon-list-alt"></span>', ['match/index', 'tournament_id' => $model->id], ['title' => 'Matches']);
+						return Html::a('<span class="glyphicon glyphicon-list-alt"></span>', ['match/index', 'tournament_id' => $model->id], ['title' => 'Matches', 'data-pjax' => 0]);
 					},
 				],
 			],

@@ -22,7 +22,7 @@ use common\models\enums\Status;
     <?= $form->field($model, 'team_id')->dropdownlist(ArrayHelper::map($teams, 'id', 'name')) ?>
 	<?php }?>
 	
-    <?= $form->field($model, 'fees_paid')->textInput() ?>
+    <?= $form->field($model, 'fees_paid')->dropdownlist(['No','Yes']) ?>
 
     <?= $form->field($model, 'status')->dropdownlist(Status::$label) ?>
 

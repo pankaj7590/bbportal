@@ -37,6 +37,12 @@ $this->params['breadcrumbs'][] = $this->title;
 					return $data->team->name;
 				}
 			],
+			[
+				'attribute' => 'fees_paid',
+				'value' => function($data){
+					return $data->fees_paid?'Yes':'No';
+				}
+			],
             'fees_paid',
 			[
 				'attribute' => 'status',

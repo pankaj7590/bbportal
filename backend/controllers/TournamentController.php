@@ -177,7 +177,7 @@ class TournamentController extends Controller
 					}
 				}
 			}
-			return $this->redirect(['change-lots', 'id' => $tournament->id]);
+			return $this->redirect(['change-lots', 'tournament_id' => $tournament->id]);
 		}
 		return $this->render('generate-lots', [
 			'tournament' => $tournament,
