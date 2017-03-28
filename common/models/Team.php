@@ -71,7 +71,7 @@ class Team extends \yii\db\ActiveRecord
             'id' => Yii::t('app', 'ID'),
             'unique_id' => Yii::t('app', 'Unique ID'),
             'name' => Yii::t('app', 'Name'),
-            'association_id' => Yii::t('app', 'Association ID'),
+            'association_id' => Yii::t('app', 'Association'),
             'level' => Yii::t('app', 'Level'),
             'status' => Yii::t('app', 'Status'),
             'created_by' => Yii::t('app', 'Created By'),

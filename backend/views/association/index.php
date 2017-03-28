@@ -3,6 +3,8 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
+use common\models\enums\Status;
+
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\AssociationSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -29,11 +31,16 @@ $this->params['breadcrumbs'][] = $this->title;
             // 'level',
             // 'seeding',
             // 'sport',
-            'status',
+			[
+				'attribute' => 'status',
+				'value' => function($data){
+					return Status::$label[$data->status];
+				},
+			],
             // 'created_by',
             // 'updated_by',
             // 'created_at',
-            'updated_at',
+            'updated_at:datetime',
 
             [
 				'class' => 'yii\grid\ActionColumn',
