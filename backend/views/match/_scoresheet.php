@@ -50,7 +50,7 @@ use common\models\enums\TournamentType;
 							<td style="border:1px solid #000"><?= $tpk+1?></td>
 							<td style="border:1px solid #000"><?= strtoupper($tpv->player->name);?></td>
 							<td style="border:1px solid #000">&nbsp;&nbsp;&nbsp;&nbsp;</td>
-							<?php if($i == 1){?>
+							<?php if(($tpk+1) == 1){?>
 								<td rowspan="12" style="border:1px solid #000">
 									<table width="100%" cellpadding="0" cellspacing="0">
 										<tr>
