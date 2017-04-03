@@ -135,11 +135,13 @@ class MatchController extends Controller
 	
 	public function actionScoresheet($id){
 		$model = $this->findModel($id);
-		$content = $this->renderPartial('_scoresheet');
+		$content = $this->renderPartial('_scoresheet', [
+			'model' => $model,
+		]);
 		$pdf = Yii::$app->pdf;
 		$pdf->content = $content;
-		$pdf->marginTop = 10;
-		$pdf->marginBottom = 10;
+		$pdf->marginTop = 5;
+		$pdf->marginBottom = 5;
 		$pdf->marginLeft = 10;
 		$pdf->marginRight = 10;
 		$pdf->filename = $model->firstTeam->team->name.' vs '.$model->secondTeam->team->name;
