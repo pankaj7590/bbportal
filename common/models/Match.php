@@ -54,8 +54,8 @@ class Match extends \yii\db\ActiveRecord
     {
         return [
             [['round', 'tournament_id', 'pool_id', 'first_team_id', 'second_team_id'], 'unique', 'targetAttribute' => ['round', 'tournament_id', 'pool_id', 'first_team_id', 'second_team_id']],
-            [['round', 'tournament_id', 'pool_id', 'first_team_id', 'second_team_id', 'toss_winning_team_id', 'choice', 'winning_team_id', 'status', 'created_by', 'updated_by', 'created_at', 'updated_at'], 'integer'],
-            [['round', 'tournament_id', 'pool_id', 'first_team_id', 'second_team_id'], 'required'],
+            [['round', 'tournament_id', 'pool_id', 'first_team_id', 'second_team_id', 'choice', 'status', 'created_by', 'updated_by', 'created_at', 'updated_at'], 'integer'],
+            [['round', 'tournament_id', 'first_team_id', 'second_team_id'], 'required'],
             [['unique_id', 'refree_name', 'scorer_name'], 'string', 'max' => 255],
             [['winning_team_id'], 'exist', 'skipOnError' => true, 'targetClass' => TournamentTeam::className(), 'targetAttribute' => ['winning_team_id' => 'id']],
             [['pool_id'], 'exist', 'skipOnError' => true, 'targetClass' => Pool::className(), 'targetAttribute' => ['pool_id' => 'id']],

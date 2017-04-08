@@ -19,8 +19,8 @@ $this->params['breadcrumbs'][] = Yii::t('app', 'Update');
     <?= $this->render('_form', [
 		'tournament' => $tournament,
         'model' => $model,
-		'pool_teams' => ArrayHelper::map($pool_teams, 'id', 'name'),
-		'selected_pool_teams' => ArrayHelper::map($selected_pool_teams, 'id', 'name'),
+		'tournament_teams' => ArrayHelper::map($tournament_teams, 'id', 'name'),
+		'selected_tournament_teams' => ArrayHelper::map($selected_tournament_teams, 'id', 'name'),
     ]) ?>
 
 </div>

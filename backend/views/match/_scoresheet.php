@@ -9,7 +9,7 @@ use common\models\enums\TournamentType;
 		</th>
 	</tr>
 	<tr>
-		<td>Pool: <?= $model->pool->name;?></td>
+		<td>Pool: <?= $model->pool?$model->pool->name:"";?></td>
 		<td>Venue: <?= $model->tournament->venue;?></td>
 		<td></td>
 		<td></td>

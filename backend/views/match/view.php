@@ -9,7 +9,7 @@ use common\models\enums\Status;
 /* @var $model common\models\Match */
 
 $this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Matches'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Matches'), 'url' => ['index', 'tournament_id' => $model->tournament->id]];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="match-view">
@@ -37,7 +37,7 @@ $this->params['breadcrumbs'][] = $this->title;
 			],
 			[
 				'attribute' => 'pool_id',
-				'value' => $model->pool->name,
+				'value' => $model->pool?$model->pool->name:NULL,
 			],
 			[
 				'attribute' => 'first_team_id',
@@ -49,11 +49,11 @@ $this->params['breadcrumbs'][] = $this->title;
 			],
 			[
 				'attribute' => 'toss_winning_team_id',
-				'value' => $model->tossWinningTeam->team->name,
+				'value' => $model->tossWinningTeam?$model->tossWinningTeam->team->name:NULL,
 			],
 			[
 				'attribute' => 'choice',
-				'value' => Choice::$label[$model->choice],
+				'value' => $model->choice?Choice::$label[$model->choice]:NULL,
 			],
             'refree_name',
             'scorer_name',

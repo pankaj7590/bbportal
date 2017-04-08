@@ -68,18 +68,24 @@ class MatchController extends Controller
     public function actionCreate($tournament_id)
     {
 		$tournament = $this->findTournament($tournament_id);
+		$tournamentTeams = $tournament->tournamentTeams;
+		$tournamentTeamsArr = [];
+		foreach($tournamentTeams as $k => $v){
+			$tournamentTeamsArr[$v->id] = $v->team->name;
+		}
         $model = new Match();
 
 		$model->tournament_id = $tournament->id;
-		$pool_teams_arr = [];
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())){
+			if($model->save()) {
+				return $this->redirect(['view', 'id' => $model->id]);
+			}
         }
 		return $this->render('create', [
 			'tournament' => $tournament,
 			'model' => $model,
-			'pool_teams' => $pool_teams_arr,
-			'selected_pool_teams' => [],
+			'tournament_teams' => $tournamentTeamsArr,
+			'selected_tournament_teams' => [],
 		]);
     }
 
@@ -93,6 +99,11 @@ class MatchController extends Controller
     {
         $model = $this->findModel($id);
 		$tournament = $this->findTournament($model->tournament_id);
+		$tournamentTeams = $tournament->tournamentTeams;
+		$tournamentTeamsArr = [];
+		foreach($tournamentTeams as $k => $v){
+			$tournamentTeamsArr[$v->id] = $v->team->name;
+		}
 
 		$model->tournament_id = $tournament->id;
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
@@ -105,8 +116,8 @@ class MatchController extends Controller
             return $this->render('update', [
                 'tournament' => $tournament,
                 'model' => $model,
-				'pool_teams' => $pool_teams_arr,
-				'selected_pool_teams' => [
+				'tournament_teams' => $tournamentTeamsArr,
+				'selected_tournament_teams' => [
 					[
 						'id' => $model->first_team_id,
 						'name' => $model->firstTeam->team->name,

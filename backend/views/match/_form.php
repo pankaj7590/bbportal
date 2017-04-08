@@ -20,19 +20,19 @@ use common\models\enums\Status;
 
     <?= $form->field($model, 'pool_id')->dropdownlist(ArrayHelper::map($tournament->pools, 'id', 'name'), ['id' => 'pool-id','prompt' => 'Select Pool']); ?>
 
-    <?= $form->field($model, 'first_team_id')->dropdownlist($pool_teams, ['id' => 'first-team', 'prompt' => 'Select Team']) ?>
+    <?= $form->field($model, 'first_team_id')->dropdownlist($tournament_teams, ['id' => 'first-team', 'prompt' => 'Select First Team']) ?>
 
-    <?= $form->field($model, 'second_team_id')->dropdownlist($pool_teams,['id' => 'second-team', 'prompt' => 'Select Team']) ?>
+    <?= $form->field($model, 'second_team_id')->dropdownlist($tournament_teams,['id' => 'second-team', 'prompt' => 'Select Second Team']) ?>
 
-    <?= $form->field($model, 'toss_winning_team_id')->dropdownlist($selected_pool_teams, ['id' => 'selected-teams', 'prompt' => 'Select Team']) ?>
+    <?= $form->field($model, 'toss_winning_team_id')->dropdownlist($selected_tournament_teams, ['id' => 'selected-teams', 'prompt' => 'Select Team']) ?>
 
-    <?= $form->field($model, 'choice')->dropdownlist(Choice::$label); ?>
+    <?= $form->field($model, 'choice')->dropdownlist(Choice::$label, ['prompt' => 'Select Choice']); ?>
 
     <?= $form->field($model, 'refree_name')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'scorer_name')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'winning_team_id')->dropdownlist([],['id' => 'winning-team', 'Select Team']) ?>
+    <?= $form->field($model, 'winning_team_id')->dropdownlist($selected_tournament_teams,['id' => 'winning-team', 'prompt' =>'Select Team']) ?>
 
     <?= $form->field($model, 'status')->dropdownlist(Status::$label) ?>
 
@@ -45,7 +45,7 @@ use common\models\enums\Status;
 </div>
 <?php
 	$this->registerJs("
-		$('#pool-id').change(function(){
+		/* $('#pool-id').change(function(){
 			pool = $(this).val();
 			$.ajax({
 				type: 'post',
@@ -71,8 +71,9 @@ use common\models\enums\Status;
 				}
 			});
 		});
+		*/
 		
-		selected_teams = '<option>Select Team</option>';
+		selected_teams = '<option value=''>Select Team</option>';
 		
 		$('#first-team').change(function(){
 			team = $(this).val();
@@ -80,6 +81,7 @@ use common\models\enums\Status;
 			$('#second-team').find('option[value='+team+']').attr('disabled','disabled');
 			if(team){
 				fillSelectedTeams();
+				fillWinningTeam();
 			}
 		});
 		
@@ -89,25 +91,36 @@ use common\models\enums\Status;
 			$('#first-team').find('option[value='+team+']').attr('disabled','disabled');
 			if(team){
 				fillSelectedTeams();
+				fillWinningTeam();
 			}
 		});
 		
 		function fillSelectedTeams(){
 				$('#selected-teams').html('');
+				$('#selected-teams').append(selected_teams);
 				first_team = $('#first-team');
-				$('#selected-teams').append('<option value='+$(first_team).val()+'>'+$(first_team).find('option[value='+$(first_team).val()+']').text()+'</option>');
+				if($(first_team).val()){
+					$('#selected-teams').append('<option value='+$(first_team).val()+'>'+$(first_team).find('option[value='+$(first_team).val()+']').text()+'</option>');
+				}
 				
 				second_team = $('#second-team');
-				$('#selected-teams').append('<option value='+$(second_team).val()+'>'+$(second_team).find('option[value='+$(second_team).val()+']').text()+'</option>');
+				if($(second_team).val()){
+					$('#selected-teams').append('<option value='+$(second_team).val()+'>'+$(second_team).find('option[value='+$(second_team).val()+']').text()+'</option>');
+				}
 		}
 		
 		function fillWinningTeam(){
 				$('#winning-team').html('');
+				$('#winning-team').append(selected_teams);
 				first_team = $('#first-team');
-				$('#winning-team').append('<option value='+$(first_team).val()+'>'+$(first_team).find('option[value='+$(first_team).val()+']').text()+'</option>');
+				if($(first_team).val()){
+					$('#winning-team').append('<option value='+$(first_team).val()+'>'+$(first_team).find('option[value='+$(first_team).val()+']').text()+'</option>');
+				}
 				
 				second_team = $('#second-team');
-				$('#winning-team').append('<option value='+$(second_team).val()+'>'+$(second_team).find('option[value='+$(second_team).val()+']').text()+'</option>');
-		}
+				if($(second_team).val()){
+					$('#winning-team').append('<option value='+$(second_team).val()+'>'+$(second_team).find('option[value='+$(second_team).val()+']').text()+'</option>');
+				}
+		} 
 	");
 ?>

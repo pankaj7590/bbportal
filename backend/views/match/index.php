@@ -30,7 +30,7 @@ $this->params['breadcrumbs'][] = 'Matches';
 				[
 					'attribute' => 'pool_id',
 					'value' => function($data){
-						return $data->pool->name;
+						return $data->pool?$data->pool->name:NULL;
 					},
 				],
 				[
